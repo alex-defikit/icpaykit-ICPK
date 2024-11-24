@@ -1,0 +1,10 @@
+/Users/duwm/Documents/payment-gateway/Coinbase/sdk_backend/icp_payment_gateway/target/debug/deps/liblogos-8e1d290bd70ac62c.rmeta: /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lib.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lexer.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/source.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/internal.rs
+
+/Users/duwm/Documents/payment-gateway/Coinbase/sdk_backend/icp_payment_gateway/target/debug/deps/liblogos-8e1d290bd70ac62c.rlib: /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lib.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lexer.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/source.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/internal.rs
+
+/Users/duwm/Documents/payment-gateway/Coinbase/sdk_backend/icp_payment_gateway/target/debug/deps/logos-8e1d290bd70ac62c.d: /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lib.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lexer.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/source.rs /Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/internal.rs
+
+/Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lib.rs:
+/Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/lexer.rs:
+/Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/source.rs:
+/Users/duwm/.cargo/registry/src/index.crates.io-6f17d22bba15001f/logos-0.12.1/src/internal.rs:

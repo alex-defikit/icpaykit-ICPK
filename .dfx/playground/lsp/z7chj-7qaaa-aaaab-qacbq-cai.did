@@ -1,0 +1,169 @@
+type LocalPrice = record {
+    amount: text;
+    currency: text;
+};
+
+type LocalValue = record {
+    amount: text;
+    currency: text;
+};
+
+type CryptoValue = record {
+    amount: text;
+    currency: text;
+};
+
+type PaymentValue = record {
+    local: LocalValue;
+    crypto: CryptoValue;
+};
+
+type Metadata = record {
+    customer_id: opt text;
+    customer_name: opt text;
+};
+
+type WhMetadata = record {
+    customer_id: opt text;
+    customer_name: opt text;
+};
+
+type Payment = record {
+    transaction_id: text;
+    from: principal;
+    amount: text;
+    created_at: nat64;
+};
+
+type WhPayment = record {
+    transaction_id: text;
+    status: text;
+    value: PaymentValue;
+    block_height: nat64;
+    created_at: text;
+};
+
+type Timeline = record {
+    time: text;
+    status: text;
+};
+
+type EventType = variant {
+    CheckoutCreated;
+    CheckoutExpired;
+    CheckoutCompleted;
+    ChargeCreated;
+    ChargePending;
+    ChargeConfirmed;
+    ChargeFailed;
+    ChargeDelayed;
+    ChargeReleaseFailed;
+};
+
+type EventData = record {
+    id: text;
+    code: opt text;
+    name: opt text;
+    description: opt text;
+    hosted_url: opt text;
+    pricing_type: text;
+    metadata: opt WhMetadata;
+    timeline: vec Timeline;
+    payments: vec WhPayment;
+};
+
+type WebhookEvent = record {
+    id: text;
+    event_type: EventType;
+    created_at: nat64;
+    api_version: text;
+    resource: text;
+    data: EventData;
+};
+
+type WebhookConfig = record {
+    url: text;
+    secret: text;
+    merchant_id: principal;
+    enabled: bool;
+};
+
+type CheckoutCreate = record {
+    name: text;
+    description: text;
+    pricing_type: text;
+    local_price: LocalPrice;
+    requested_info: vec text;
+};
+
+type CheckoutStatus = variant {
+    Pending;
+    Completed;
+    Expired;
+};
+
+type Checkout = record {
+    id: text;
+    merchant_id: principal;
+    name: text;
+    description: text;
+    pricing_type: text;
+    local_price: LocalPrice;
+    requested_info: vec text;
+    created_at: nat64;
+    updated_at: nat64;
+    status: CheckoutStatus;
+    payment_link: text;
+};
+
+type ChargeCreate = record {
+    name: text;
+    description: text;
+    pricing_type: text;
+    local_price: LocalPrice;
+    metadata: opt Metadata;
+};
+
+type ChargeStatus = variant {
+    Pending;
+    Completed;
+    Failed;
+    Expired;
+};
+
+type Charge = record {
+    id: text;
+    merchant_id: principal;
+    name: text;
+    description: text;
+    pricing_type: text;
+    local_price: LocalPrice;
+    metadata: opt Metadata;
+    payments: vec Payment;
+    created_at: nat64;
+    status: ChargeStatus;
+    payment_block_height: opt nat64;
+    release_block_height: opt nat64;
+};
+
+service : {
+    // Merchant management
+    register_merchant: () -> (variant { Ok; Err: text });
+
+    // Checkout endpoints
+    create_checkout: (CheckoutCreate) -> (variant { Ok: Checkout; Err: text });
+    get_checkout: (text) -> (variant { Ok: Checkout; Err: text }) query;
+
+    // Charge endpoints  
+    create_charge: (ChargeCreate) -> (variant { Ok: Charge; Err: text });
+    get_charge: (text) -> (variant { Ok: Charge; Err: text }) query;
+    list_charges: () -> (vec Charge) query;
+
+    // Payment endpoints
+    process_payment: (text) -> (variant { Ok: nat64; Err: text });
+
+    // Webhook endpoints
+    register_webhook: (WebhookConfig) -> (variant { Ok; Err: text });
+    verify_webhook: (text, text) -> (variant { Ok: WebhookEvent; Err: text });
+    get_webhook_config: () -> (variant { Ok: WebhookConfig; Err: text }) query;
+}

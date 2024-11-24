@@ -1,0 +1,30 @@
+{
+  "replica_rev": "3d0b3f10417fc6708e8b5d844a0bac5e86f3e17d",
+  "type": "replica",
+  "config": {
+    "http_handler": {
+      "port": null,
+      "write_port_to": "/Users/duwm/Documents/payment-gateway/Coinbase/sdk_backend/icp_payment_gateway copy/.dfx/network/local/replica-configuration/replica-1.port"
+    },
+    "state_manager": {
+      "state_root": "/Users/duwm/Documents/payment-gateway/Coinbase/sdk_backend/icp_payment_gateway copy/.dfx/network/local/state/replicated_state"
+    },
+    "crypto": {
+      "crypto_root": "/Users/duwm/Documents/payment-gateway/Coinbase/sdk_backend/icp_payment_gateway copy/.dfx/network/local/state/crypto_store"
+    },
+    "artifact_pool": {
+      "consensus_pool_path": "/Users/duwm/Documents/payment-gateway/Coinbase/sdk_backend/icp_payment_gateway copy/.dfx/network/local/state/consensus_pool"
+    },
+    "subnet_type": "application",
+    "btc_adapter": {
+      "enabled": true,
+      "socket_path": "/var/folders/5z/jmd8j6850j16jhhflfsm1ykc0000gn/T/ic-btc-adapter-socket.7272.1732413016"
+    },
+    "canister_http_adapter": {
+      "enabled": true,
+      "socket_path": "/var/folders/5z/jmd8j6850j16jhhflfsm1ykc0000gn/T/ic-https-outcalls-adapter-socket.7272.1732413016"
+    },
+    "log_level": "error",
+    "artificial_delay": 600
+  }
+}

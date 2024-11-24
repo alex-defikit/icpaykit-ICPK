@@ -1,0 +1,160 @@
+type Charge = record {
+  id : text;
+  status : ChargeStatus;
+  merchant_id : principal;
+  pricing_type : text;
+  payments : vec Payment;
+  metadata : opt Metadata;
+  name : text;
+  local_price : LocalPrice;
+  subaccount : blob;
+  description : text;
+  created_at : nat64;
+  payment_block_height : opt nat64;
+  btc_address : text;
+  release_block_height : opt nat64;
+};
+type ChargeCreate = record {
+  pricing_type : text;
+  metadata : opt Metadata;
+  name : text;
+  local_price : LocalPrice;
+  description : text;
+};
+type ChargeStatus = variant { Failed; Completed; Expired; Pending };
+type Checkout = record {
+  id : text;
+  status : CheckoutStatus;
+  requested_info : vec text;
+  updated_at : nat64;
+  payment_link : text;
+  merchant_id : principal;
+  pricing_type : text;
+  name : text;
+  local_price : LocalPrice;
+  description : text;
+  created_at : nat64;
+};
+type CheckoutCreate = record {
+  requested_info : vec text;
+  pricing_type : text;
+  name : text;
+  local_price : LocalPrice;
+  description : text;
+};
+type CheckoutStatus = variant { Completed; Expired; Pending };
+type CryptoValue = record { currency : text; amount : text };
+type EventData = record {
+  id : text;
+  pricing_type : text;
+  payments : vec WhPayment;
+  metadata : opt WhMetadata;
+  code : opt text;
+  name : opt text;
+  hosted_url : opt text;
+  description : opt text;
+  timeline : vec Timeline;
+};
+type EventType = variant {
+  CheckoutCreated;
+  ChargeReleaseFailed;
+  CheckoutExpired;
+  ChargeDelayed;
+  ChargeCreated;
+  ChargePending;
+  ChargeFailed;
+  CheckoutCompleted;
+  ChargeConfirmed;
+};
+type LocalPrice = record { currency : text; amount : text };
+type LocalValue = record { currency : text; amount : text };
+type Metadata = record { customer_id : opt text; customer_name : opt text };
+type Payment = record {
+  transaction_id : text;
+  from : principal;
+  created_at : nat64;
+  amount : text;
+};
+type PaymentValue = record { local : LocalValue; crypto : CryptoValue };
+type Timeline = record { status : text; time : text };
+type WebhookConfig = record {
+  url : text;
+  merchant_id : principal;
+  secret : text;
+  enabled : bool;
+};
+type WebhookEvent = record {
+  id : text;
+  resource : text;
+  api_version : text;
+  data : EventData;
+  created_at : nat64;
+  event_type : EventType;
+};
+type WhMetadata = record { customer_id : opt text; customer_name : opt text };
+type WhPayment = record {
+  transaction_id : text;
+  status : text;
+  value : PaymentValue;
+  created_at : text;
+  block_height : nat64;
+};
+type bitcoin_address = text;
+type block_hash = blob;
+type block_header = blob;
+type block_height = nat32;
+type get_block_headers_response = record {
+  tip_height : block_height;
+  block_headers : vec block_header;
+};
+type get_utxos_response = record {
+  next_page : opt blob;
+  tip_height : nat32;
+  tip_block_hash : block_hash;
+  utxos : vec utxo;
+};
+type millisatoshi_per_vbyte = nat64;
+type network = variant { mainnet; regtest; testnet };
+type outpoint = record { txid : blob; vout : nat32 };
+type satoshi = nat64;
+type transaction_id = text;
+type utxo = record { height : nat32; value : satoshi; outpoint : outpoint };
+service : (network) -> {
+  create_charge : (ChargeCreate) -> (variant { Ok : Charge; Err : text });
+  create_checkout : (CheckoutCreate) -> (variant { Ok : Checkout; Err : text });
+  get_balance : (bitcoin_address) -> (satoshi);
+  get_block_headers : (block_height, opt block_height) -> (
+      get_block_headers_response,
+    );
+  get_charge : (text) -> (variant { Ok : Charge; Err : text }) query;
+  get_checkout : (text) -> (variant { Ok : Checkout; Err : text }) query;
+  get_current_fee_percentiles : () -> (vec millisatoshi_per_vbyte);
+  get_p2pkh_address : () -> (bitcoin_address);
+  get_p2tr_raw_key_spend_address : () -> (bitcoin_address);
+  get_p2tr_script_spend_address : () -> (bitcoin_address);
+  get_utxos : (bitcoin_address) -> (get_utxos_response);
+  get_webhook_config : () -> (variant { Ok : WebhookConfig; Err : text }) query;
+  list_charges : () -> (vec Charge) query;
+  process_payment : (text) -> (variant { Ok : nat64; Err : text });
+  register_merchant : () -> (variant { Ok; Err : text });
+  register_webhook : (WebhookConfig) -> (variant { Ok; Err : text });
+  send_from_p2pkh : (
+      record {
+        destination_address : bitcoin_address;
+        amount_in_satoshi : satoshi;
+      },
+    ) -> (transaction_id);
+  send_from_p2tr_raw_key_spend : (
+      record {
+        destination_address : bitcoin_address;
+        amount_in_satoshi : satoshi;
+      },
+    ) -> (transaction_id);
+  send_from_p2tr_script_spend : (
+      record {
+        destination_address : bitcoin_address;
+        amount_in_satoshi : satoshi;
+      },
+    ) -> (transaction_id);
+  verify_webhook : (text, text) -> (variant { Ok : WebhookEvent; Err : text });
+}
