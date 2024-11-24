@@ -18,11 +18,11 @@
     "subnet_type": "application",
     "btc_adapter": {
       "enabled": true,
-      "socket_path": "/var/folders/5z/jmd8j6850j16jhhflfsm1ykc0000gn/T/ic-btc-adapter-socket.7272.1732413016"
+      "socket_path": "/var/folders/5z/jmd8j6850j16jhhflfsm1ykc0000gn/T/ic-btc-adapter-socket.58012.1732469544"
     },
     "canister_http_adapter": {
       "enabled": true,
-      "socket_path": "/var/folders/5z/jmd8j6850j16jhhflfsm1ykc0000gn/T/ic-https-outcalls-adapter-socket.7272.1732413016"
+      "socket_path": "/var/folders/5z/jmd8j6850j16jhhflfsm1ykc0000gn/T/ic-https-outcalls-adapter-socket.58012.1732469544"
     },
     "log_level": "error",
     "artificial_delay": 600

@@ -8,6 +8,24 @@ type transaction_id = text;
 
 type block_hash = blob;
 
+type SendRequest = record {
+    destination_address: bitcoin_address;
+    amount_in_satoshi: satoshi;
+};
+
+type PaymentMethod = variant {
+    ICP;
+    BTC;
+};
+
+type Payment = record {
+    id: text;
+    charge_id: text;
+    amount: nat64;
+    status: text;
+    method: PaymentMethod;
+    created_at: int;
+};
 
 type LocalPrice = record {
     amount: text;
@@ -39,7 +57,7 @@ type WhMetadata = record {
     customer_name: opt text;
 };
 
-type Payment = record {
+type CPayment = record {
     transaction_id: text;
     from: principal;
     amount: text;
@@ -150,7 +168,7 @@ type Charge = record {
     pricing_type: text;
     local_price: LocalPrice;
     metadata: opt Metadata;
-    payments: vec Payment;
+    payments: vec CPayment;
     created_at: nat64;
     status: ChargeStatus;
     payment_block_height: opt nat64;
@@ -195,6 +213,7 @@ type get_block_headers_response = record {
 service : (network) -> {
     // Merchant management
     register_merchant: () -> (variant { Ok; Err: text });
+    register_merchant_addresses: (text) -> (variant { Ok; Err: text });
 
     // Checkout endpoints
     create_checkout: (CheckoutCreate) -> (variant { Ok: Checkout; Err: text });

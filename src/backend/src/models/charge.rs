@@ -27,7 +27,7 @@ pub struct Charge {
     pub pricing_type: String,
     pub local_price: LocalPrice,
     pub metadata: Option<Metadata>,
-    pub payments: Vec<Payment>,
+    pub payments: Vec<CPayment>,
     pub created_at: u64,
     pub status: ChargeStatus,
     pub payment_block_height: Option<u64>,
@@ -37,7 +37,7 @@ pub struct Charge {
 }
 
 #[derive(CandidType, Deserialize, Clone, Debug)]
-pub struct Payment {
+pub struct CPayment {
     pub transaction_id: String,
     pub amount: Tokens,
     pub from: Principal,

@@ -2,12 +2,18 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
+export interface CPayment {
+  'transaction_id' : string,
+  'from' : Principal,
+  'created_at' : bigint,
+  'amount' : string,
+}
 export interface Charge {
   'id' : string,
   'status' : ChargeStatus,
   'merchant_id' : Principal,
   'pricing_type' : string,
-  'payments' : Array<Payment>,
+  'payments' : Array<CPayment>,
   'metadata' : [] | [Metadata],
   'name' : string,
   'local_price' : LocalPrice,
@@ -80,12 +86,20 @@ export interface Metadata {
   'customer_name' : [] | [string],
 }
 export interface Payment {
-  'transaction_id' : string,
-  'from' : Principal,
+  'id' : string,
+  'status' : string,
+  'method' : PaymentMethod,
   'created_at' : bigint,
-  'amount' : string,
+  'charge_id' : string,
+  'amount' : bigint,
 }
+export type PaymentMethod = { 'BTC' : null } |
+  { 'ICP' : null };
 export interface PaymentValue { 'local' : LocalValue, 'crypto' : CryptoValue }
+export interface SendRequest {
+  'destination_address' : bitcoin_address,
+  'amount_in_satoshi' : satoshi,
+}
 export interface Timeline { 'status' : string, 'time' : string }
 export interface WebhookConfig {
   'url' : string,
@@ -177,6 +191,11 @@ export interface _SERVICE {
       { 'Err' : string }
   >,
   'register_merchant' : ActorMethod<[], { 'Ok' : null } | { 'Err' : string }>,
+  'register_merchant_addresses' : ActorMethod<
+    [string],
+    { 'Ok' : null } |
+      { 'Err' : string }
+  >,
   'register_webhook' : ActorMethod<
     [WebhookConfig],
     { 'Ok' : null } |

@@ -9,8 +9,12 @@ pub fn register_merchant(merchant_id: Principal) -> Result<(), AuthError> {
         return Err(AuthError::InvalidPrincipal("Anonymous principal not allowed".to_string()));
     }
 
-    // let merchant_account: AccountIdentifier = AccountIdentifier::new(&merchant_id, &DEFAULT_SUBACCOUNT);
+    // Check if merchant is already registered
+    if STORE.with(|store| store.borrow().is_merchant(&merchant_id)) {
+        return Err(AuthError::MerchantAlreadyExists("Merchant already registered".to_string()));
+    }
 
+    // Register merchant with basic registration
     STORE.with(|store| {
         store.borrow_mut().register_merchant(merchant_id);
     });

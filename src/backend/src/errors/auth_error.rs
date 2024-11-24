@@ -10,4 +10,7 @@ pub enum AuthError {
     
     #[error("Unauthorized: {0}")]
     Unauthorized(String),
+
+    #[error("Merchant already exists: {0}")]
+    MerchantAlreadyExists(String),
 } 

@@ -4,6 +4,7 @@ use ic_ledger_types::{AccountIdentifier, DEFAULT_SUBACCOUNT, Tokens};
 use ic_cdk::api::management_canister::bitcoin::{
     BitcoinNetwork, GetUtxosResponse, MillisatoshiPerByte,
 };
+use models::PaymentMethod;
 use std::cell::{Cell, RefCell};
 
 pub mod api;
@@ -89,6 +90,17 @@ fn register_merchant() -> Result<(), String> {
         .map_err(|e| e.to_string())
 }
 
+#[update]
+fn register_merchant_addresses(
+    btc_address: String
+) -> Result<(), String> {
+    let caller = ic_cdk::caller();
+    services::merchant::register_merchant_addresses(
+        caller,
+        btc_address
+    )
+}
+
 // Checkout endpoints
 #[update]
 async fn create_checkout(params: CheckoutCreate) -> Result<Checkout, String> {
@@ -133,18 +145,22 @@ fn get_webhook_config() -> Result<WebhookConfig, String> {
 }
 
 #[update]
-async fn process_payment(charge_id: String) -> Result<u64, String> {
+async fn process_payment(
+    charge_id: String, 
+    payment_method: PaymentMethod
+) -> Result<u64, String> {
     let caller = ic_cdk::caller();
     let caller_account = AccountIdentifier::new(&caller, &DEFAULT_SUBACCOUNT);
     
     let charge = api::charge::get_charge(charge_id.clone())?;
     
-    let amount = charge.local_price.amount.parse::<u64>().unwrap();
+    let amount = Tokens::from_e8s(charge.local_price.amount.parse::<u64>().unwrap());
 
     services::payment::process_payment(
         caller_account,
-        Tokens::from_e8s(amount as u64),
-        charge_id
+        amount,
+        charge_id,
+        payment_method
     ).await
 }
 

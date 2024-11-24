@@ -1,9 +1,15 @@
+type CPayment = record {
+  transaction_id : text;
+  from : principal;
+  created_at : nat64;
+  amount : text;
+};
 type Charge = record {
   id : text;
   status : ChargeStatus;
   merchant_id : principal;
   pricing_type : text;
-  payments : vec Payment;
+  payments : vec CPayment;
   metadata : opt Metadata;
   name : text;
   local_price : LocalPrice;
@@ -70,12 +76,19 @@ type LocalPrice = record { currency : text; amount : text };
 type LocalValue = record { currency : text; amount : text };
 type Metadata = record { customer_id : opt text; customer_name : opt text };
 type Payment = record {
-  transaction_id : text;
-  from : principal;
-  created_at : nat64;
-  amount : text;
+  id : text;
+  status : text;
+  method : PaymentMethod;
+  created_at : int;
+  charge_id : text;
+  amount : nat64;
 };
+type PaymentMethod = variant { BTC; ICP };
 type PaymentValue = record { local : LocalValue; crypto : CryptoValue };
+type SendRequest = record {
+  destination_address : bitcoin_address;
+  amount_in_satoshi : satoshi;
+};
 type Timeline = record { status : text; time : text };
 type WebhookConfig = record {
   url : text;
@@ -137,6 +150,7 @@ service : (network) -> {
   list_charges : () -> (vec Charge) query;
   process_payment : (text) -> (variant { Ok : nat64; Err : text });
   register_merchant : () -> (variant { Ok; Err : text });
+  register_merchant_addresses : (text) -> (variant { Ok; Err : text });
   register_webhook : (WebhookConfig) -> (variant { Ok; Err : text });
   send_from_p2pkh : (
       record {

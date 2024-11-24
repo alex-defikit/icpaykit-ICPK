@@ -1,33 +1,44 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
 use candid::Principal;
+use ic_ledger_types::AccountIdentifier;
 
 use crate::models::checkout::Checkout;
 use crate::models::charge::Charge;
 use crate::models::webhook::WebhookConfig;
+use crate::models::merchant::*;
+use crate::models::payment::Payment;
 
 thread_local! {
     pub static STORE: RefCell<Store> = RefCell::new(Store::init());
 }
 
+#[derive(Clone)]
+pub struct MerchantAddresses {
+    pub btc_address: String,
+}
+
 #[derive(Default)]
 pub struct Store {
     merchants: HashMap<Principal, bool>,
+    merchant_addresses: HashMap<Principal, MerchantAddresses>,
     transaction_subaccounts: HashMap<String, [u8; 32]>,
     checkouts: HashMap<String, Checkout>,
     charges: HashMap<String, Charge>,
     webhook_configs: HashMap<Principal, WebhookConfig>,
+    payments: HashMap<String, Payment>,
 }
 
 impl Store {
     pub fn init() -> Self {
         Self {
             merchants: HashMap::new(),
-            // merchant_accounts: HashMap::new(),
+            merchant_addresses: HashMap::new(),
             transaction_subaccounts: HashMap::new(),
             checkouts: HashMap::new(),
             charges: HashMap::new(),
             webhook_configs: HashMap::new(),
+            payments: HashMap::new(),
         }
     }
 
@@ -99,5 +110,35 @@ impl Store {
 
     pub fn remove_webhook_config(&mut self, merchant_id: &Principal) {
         self.webhook_configs.remove(merchant_id);
+    }
+
+    pub fn register_merchant_addresses(
+        &mut self, 
+        merchant_id: Principal,
+        btc_address: String
+    ) {
+        // Ensure merchant is registered first
+        self.merchants.insert(merchant_id, true);
+        
+        // Store merchant addresses
+        self.merchant_addresses.insert(merchant_id, MerchantAddresses {
+            btc_address,
+        });
+    }
+
+    pub fn get_merchant_addresses(&self, merchant_id: &Principal) -> Option<&MerchantAddresses> {
+        self.merchant_addresses.get(merchant_id)
+    }
+
+    pub fn create_payment(&mut self, payment: Payment) {
+        self.payments.insert(payment.id.clone(), payment);
+    }
+
+    pub fn get_payment(&self, payment_id: &str) -> Option<&Payment> {
+        self.payments.get(payment_id)
+    }
+
+    pub fn update_payment(&mut self, payment_id: &str, payment: Payment) {
+        self.payments.insert(payment_id.to_string(), payment);
     }
 }

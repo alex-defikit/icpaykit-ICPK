@@ -22,7 +22,7 @@ export const idlFactory = ({ IDL }) => {
     'Expired' : IDL.Null,
     'Pending' : IDL.Null,
   });
-  const Payment = IDL.Record({
+  const CPayment = IDL.Record({
     'transaction_id' : IDL.Text,
     'from' : IDL.Principal,
     'created_at' : IDL.Nat64,
@@ -33,7 +33,7 @@ export const idlFactory = ({ IDL }) => {
     'status' : ChargeStatus,
     'merchant_id' : IDL.Principal,
     'pricing_type' : IDL.Text,
-    'payments' : IDL.Vec(Payment),
+    'payments' : IDL.Vec(CPayment),
     'metadata' : IDL.Opt(Metadata),
     'name' : IDL.Text,
     'local_price' : LocalPrice,
@@ -201,6 +201,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'register_merchant' : IDL.Func(
         [],
+        [IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Text })],
+        [],
+      ),
+    'register_merchant_addresses' : IDL.Func(
+        [IDL.Text],
         [IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Text })],
         [],
       ),
