@@ -29,7 +29,7 @@ dfx deploy backend --argument '(variant { regtest})'
 ### 3. Canister Interaction:
 - Create BTC address: 
 
-  <img title="Generate BTC Address" alt="Generate BTC Address" src="./interact.png">
+  <img title="Generate BTC Address" alt="Generate BTC Address" src="./images//interact.png">
 
 - Register merchant and merchant BTC address: 
   ```
@@ -53,3 +53,7 @@ dfx deploy backend --argument '(variant { regtest})'
   ```
   dfx canister call backend process_payment '("[charge id]")'
   ```
+
+  - Future Pay UI with chargeId as the URL parameter:
+
+  <img title="Future Pay UI" alt="Future Pay UI" src="./images/PayUI.png">
